@@ -85,8 +85,6 @@ model.evaluate(
 ##################################
 import random 
 import cv2 
-import numpy as np
-import matplotlib.pyplot as plt
 
 def add_noise(img): 
     row , col = 64, 64
@@ -97,26 +95,13 @@ def add_noise(img):
         img[y_coord][x_coord] = 0       
     return img 
 
-img = cv2.imread('D:/Eye-tracking/Simulateddata/A.jpg')
-# cv2.imshow('Photo initiale', img)
-# cv2.waitKey()
-# cv2.destroyAllWindows() 
-
-img_bruit = add_noise(img)
-plt.imshow(img_bruit)
-plt.save(img_bruit)
-# cv2.imshow('Photo avec bruit', img_bruit)
-# cv2.waitKey()
-# cv2.destroyAllWindows() 
-
-nb_images = 50
+nb_images = 10
 for i in range(0,nb_images-1):
-    name = "Image"+str(i)
+    name = "Image"+str(i)+".png"
+    img = cv2.imread('D:/Eye-tracking/Simulateddata/A.jpg')
     img_bruit = add_noise(img)
-    img_bruit.save(name) 
+    cv2.imwrite(name, img_bruit)
 
-    
-    
 
 ##################################
 # Prédictions pour des images avec du bruit
