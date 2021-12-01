@@ -17,7 +17,7 @@ from PIL import Image
 # Chargement du dataset avec keras
 ##################################
 # Création des jeux de données
-data_dir = "D:/Eye-tracking/Simulateddata/Photos"
+data_dir = "C:/Simulateddata/Photos"
 batch_size = 50
 img_height = 64
 img_width = 64
@@ -98,7 +98,7 @@ def add_noise(img):
 nb_images = 10
 for i in range(0,nb_images-1):
     name = "Image"+str(i)+".png"
-    img = cv2.imread('D:/Eye-tracking/Simulateddata/A.jpg')
+    img = cv2.imread('C:/Simulateddata/A.jpg')
     img_bruit = add_noise(img)
     cv2.imwrite(name, img_bruit)
 
