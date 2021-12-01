@@ -11,13 +11,15 @@ Created on Wed Oct 13 16:53:30 2021
 ##################################
 import tensorflow as tf
 import numpy as np
-from PIL import Image
+import random 
+import cv2 
+import os
 
 ##################################
 # Chargement du dataset avec keras
 ##################################
 # Création des jeux de données
-data_dir = "D:/Eye-tracking/Simulateddata/Photos"
+data_dir = "D:/Eye-tracking/Simulateddata/Photos_initiales"
 batch_size = 50
 img_height = 64
 img_width = 64
@@ -67,7 +69,7 @@ model.compile(
   loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
   metrics=['accuracy'])
 
-epochs = 10
+epochs = 3
 history = model.fit(
   train,
   epochs=epochs)
@@ -75,7 +77,7 @@ history = model.fit(
 ##################################
 # Evaluation de la performance du modèle (test)
 ##################################
-print("Evaluation de la performance avec le jeu de données test")
+print("Evaluation de la performance avec le jeu test")
 model.evaluate(
     test, 
     verbose=2)
@@ -83,37 +85,46 @@ model.evaluate(
 ##################################
 # Ajouter du bruit aux lettres
 ##################################
-import random 
-import cv2 
-
 def add_noise(img): 
     row , col = 64, 64
-    number_of_pixels = random.randint(2000 , 3000) 
+    number_of_pixels = random.randint(300 , 10000) 
     for i in range(number_of_pixels): 
         y_coord=random.randint(0, row - 1) 
         x_coord=random.randint(0, col - 1) 
         img[y_coord][x_coord] = 0       
     return img 
 
+img = cv2.imread('D:/Eye-tracking/Simulateddata/A.jpg')
+    
+
+dirname = "D:/Eye-tracking/Simulateddata/Photos_bruit"
 nb_images = 10
-for i in range(0,nb_images-1):
+for i in range(0,nb_images):
     name = "Image"+str(i)+".png"
     img = cv2.imread('D:/Eye-tracking/Simulateddata/A.jpg')
     img_bruit = add_noise(img)
-    cv2.imwrite(name, img_bruit)
-
+    cv2.imwrite(os.path.join(dirname, name), img_bruit)
 
 ##################################
 # Prédictions pour des images avec du bruit
 ##################################
     
-# probability_model = tf.keras.Sequential([model, 
-#                                           tf.keras.layers.Softmax()]) # Conversion des logits en probabilités
+data_dir = "D:/Eye-tracking/Simulateddata/Photos_bruit"
+batch_size = 50
+img_height = 64
+img_width = 64
 
-# predictions = probability_model.predict(bruit)
+bruit = tf.keras.utils.image_dataset_from_directory(
+  data_dir,
+  labels=None,
+  seed=123,
+  image_size=(img_height, img_width),  
+  batch_size=batch_size)
 
-# print(predictions[0]) # 1ère prédiction
-# print(np.argmax(predictions[0])) # Etiquette avec la valeur de confiance la plus élevée pour la 1ère prédiction
+predictions = model.predict(bruit)
 
- 
+for i in range(len(predictions)):
+    print("Photo A-",i)
+    print(predictions[i].round(3)) 
+    print(np.argmax(predictions[i]))
 
