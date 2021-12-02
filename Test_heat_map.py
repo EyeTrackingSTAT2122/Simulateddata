@@ -4,7 +4,7 @@ Created on Wed Oct 13 16:53:30 2021
 
 @author: Clara Laudine Elias
 """
-# Problématique : Déterminer si le bruit autour d'un stimulus influence la classe d'affectation
+# Problématique : Déterminer si le classifieur est 
 
 ##################################
 # Importation des packages 
@@ -19,11 +19,10 @@ import os
 # Chargement du dataset avec keras
 ##################################
 # Création des jeux de données
-data_dir = "D:/Eye-tracking/Simulateddata/Photos_initiales"
-
+data_dir = "D:/Eye-tracking/Simulateddata/C_heat_map"
 batch_size = 10
-img_height = 64
-img_width = 64
+img_height = 256
+img_width = 256
 
 # Jeu de données d'apprentissage
 train = tf.keras.utils.image_dataset_from_directory(
@@ -51,14 +50,13 @@ test = tf.keras.utils.image_dataset_from_directory(
 num_classes = 2
 model = tf.keras.Sequential([
   tf.keras.layers.Rescaling(1./255), # Normalisation des valeurs des canaux RVB
+  tf.keras.layers.Conv2D(filters=4, kernel_size=(2, 2), activation="relu"),
+  tf.keras.layers.MaxPooling2D(),
   tf.keras.layers.Conv2D(filters=16, kernel_size=(3, 3), activation="relu"),
   tf.keras.layers.MaxPooling2D(),
   tf.keras.layers.Conv2D(filters=32, kernel_size=(3, 3), activation="relu"),
   tf.keras.layers.MaxPooling2D(),
-  tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), activation="relu"),
-  tf.keras.layers.MaxPooling2D(),
   tf.keras.layers.Flatten(),
-  tf.keras.layers.Dense(128, activation='relu'),
   tf.keras.layers.Dense(num_classes, activation="softmax")
 ])
 
@@ -70,7 +68,7 @@ model.compile(
   loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
   metrics=['accuracy'])
 
-epochs = 3
+epochs = 8
 history = model.fit(
   train,
   epochs=epochs)
@@ -84,48 +82,34 @@ model.evaluate(
     verbose=2)
 
 ##################################
-# Ajouter du bruit aux lettres
+# Prédictions pour des nouvelles images 
 ##################################
-def add_noise(img): 
-    row , col = 64, 64
-    number_of_pixels = random.randint(300 , 10000) 
-    for i in range(number_of_pixels): 
-        y_coord=random.randint(0, row - 1) 
-        x_coord=random.randint(0, col - 1) 
-        img[y_coord][x_coord] = 0       
-    return img 
-
-img = cv2.imread('D:/Eye-tracking/Simulateddata/A.jpg')
-    
-
-dirname = "D:/Eye-tracking/Simulateddata/Photos_bruit"
-nb_images = 10
-for i in range(0,nb_images):
-    name = "Image"+str(i)+".png"
-    img = cv2.imread('C:/Simulateddata/A.jpg')
-    img_bruit = add_noise(img)
-    cv2.imwrite(os.path.join(dirname, name), img_bruit)
-
-##################################
-# Prédictions pour des images avec du bruit
-##################################
-    
-data_dir = "D:/Eye-tracking/Simulateddata/Photos_bruit"
+data_dir = "D:/Eye-tracking/Simulateddata/data_test_C"
 batch_size = 10
-img_height = 64
-img_width = 64
+img_height = 256
+img_width = 256
 
 bruit = tf.keras.utils.image_dataset_from_directory(
   data_dir,
   labels=None,
   seed=123,
-  image_size=(img_height, img_width),  
+  image_size=(img_height, img_width),
   batch_size=batch_size)
 
 predictions = model.predict(bruit)
 
+count = 0
 for i in range(len(predictions)):
-    print("Photo A-",i)
+    print("Photo C-",i)
     print(predictions[i].round(3)) 
     print(np.argmax(predictions[i]))
+    # count = count + np.argmax(predictions[i])
 
+# print("================")
+# print(f"Il y a {count} erreurs pour {len(predictions)} photos")
+
+    # if np.argmax(predictions[i]) == label[i] :
+    #     print("Ok")
+    # else:
+    #     print("Pas ok")
+    
