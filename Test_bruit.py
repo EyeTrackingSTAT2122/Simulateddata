@@ -24,6 +24,8 @@ import matplotlib.pyplot as plt
 data_dir = "C:/Simulateddata/Photos_initiales"
 
 batch_size = 10 #On en a 400 au total et on en enlève 20% pour le test
+
+batch_size = 10
 img_height = 64
 img_width = 64
 
@@ -129,6 +131,9 @@ for i in range(0,nb_images):
     
 data_dir = "C:/Simulateddata/Vertical_wave"
 batch_size = 50
+data_dir = "D:/Eye-tracking/Simulateddata/Photos_bruit"
+batch_size = 10
+
 img_height = 64
 img_width = 64
 
