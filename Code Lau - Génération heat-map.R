@@ -1,29 +1,14 @@
-x <- rep(0,100)
-y <- rep(0,100)
-duration <- rep(0,100)
+N <- 100
 
+rho <- 0
+mu1 <- 25; s1 <- 5
+mu2 <- 75; s2 <- 5
 
-for (i in 1:50){
-  x[i] <-  rnorm(1,25,10)
-  y[i] <- rnorm(1,50,30)
-}
+mu <- c(mu1,mu2)
+sigma <- matrix(c(s1^2, s1*s2*rho, s1*s2*rho, s2^2),2)
 
-for (i in 51:100){
-  x[i] <-  rnorm(1,75,10)
-  y[i] <- rnorm(1,50,30)
-}
+library(MASS)
+bvn1 <- mvrnorm(N, mu = mu, Sigma = sigma )
+colnames(bvn1) <- c("bvn1_X1","bvn1_X2")
 
-df <- data.frame(x,y,duration)
-
-library(ggplot2)
-ggplot(df[1:50,], aes(x=x,y=y,fill=duration)) + 
-  geom_point() + 
-  scale_x_continuous(limits=c(0,100)) +
-  scale_y_continuous(limits=c(0,100)) + 
-  theme_classic()
-
-ggplot(df[51:100,], aes(x=x,y=y,fill=duration)) + 
-  geom_point() + 
-  scale_x_continuous(limits=c(0,100)) +
-  scale_y_continuous(limits=c(0,100)) + 
-  theme_classic()
+plot(bvn1,xlim=c(0,100),ylim=c(0,100))
