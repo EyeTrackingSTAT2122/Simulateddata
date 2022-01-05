@@ -1,4 +1,4 @@
-coord_split <- read.csv("~/Agro/5A/Projet Ingé/Simulateddata/AOI_test_brutes.csv", sep=",")
+coord_split <- read.csv("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/AOI_test_brutes.csv", sep=",")
 
 #Séparation des blocs : un bloc correspondant à un ensemble de coordonées de point. 
 #Un bloc correspond à un stimulus vu par une personne
@@ -29,26 +29,26 @@ View(coord_split)
 
 #Zone 1:Bleu
 z1x1 = 0
-z1x2 = 841
+z1x2 = 840
 z1y1 = 0
 z1y2 = 464
 
 #Zone 2 : Jaune:
-z2x1= 841
+z2x1= 840
 z2x2= 1680
 z2y1= 464
 z2y2= 926
 
 #Zone 3 : Orange:
-z3x1= 1680
-z3x2= 840
+z3x1= 840
+z3x2= 1680
 z3y1= 0
 z3y2= 464
 
 #Zone 4 : Vert:
 z4x1= 0
 z4x2= 840
-z4y1= 462
+z4y1= 464
 z4y2= 926
 
 #Création du data frame qui va accueillir les données des zones
@@ -73,10 +73,12 @@ y = (data [,2]/100)*height
 time = data[,3]
 i = 1
 j=1
-while (i < lg_data[1]){
+while (i <= lg_data[1]){
   if (x[i]>=z1x1 && x[i]<=z1x2 && y[i]>=z1y1 && y[i]<= z1y2){
     t1 = time[i]
     while(x[i]>=z1x1 && x[i]<=z1x2 && y[i]>=z1y1 && y[i]<= z1y2){
+      print(i)
+      print(j)
       i = i +1
       t2 = time[i]
     }
@@ -87,6 +89,8 @@ while (i < lg_data[1]){
   else if (x[i]>=z2x1 && x[i]<=z2x2 && y[i]>=z2y1 && y[i]<=z2y2){
     t1 = time[i]
     while(x[i]>=z2x1 && x[i]<=z2x2 && y[i]>=z2y1 && y[i]<=z2y2){
+      print(i)
+      print(j)
       i =i +1
       t2 = time[i]
     }
@@ -97,6 +101,8 @@ while (i < lg_data[1]){
   else if (x[i]>=z3x1 && x[i]<=z3x2 && y[i]>=z3y1 && y[i]<=z3y2){
     t1 = time[i]
     while(x[i]>=z3x1 && x[i]<=z3x2 && y[i]>=z3y1 && y[i]<=z3y2){
+      print(i)
+      print(j)
       i =i +1
       t2 = time[i]
     }
@@ -107,6 +113,8 @@ while (i < lg_data[1]){
   else if (x[i]>=z4x1 && x[i]<=z4x2 && y[i]>=z4y1 && y[i]<= z4y2){
     t1 = time[i]
     while(x[i]>=z4x1 && x[i]<=z4x2 && y[i]>=z4y1 && y[i]<= z4y2){
+      print(i)
+      print(j)
       i =i +1
       t2 = time[i]
     }
