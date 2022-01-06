@@ -153,3 +153,33 @@ for (i in 1:nTest){
    tab[i,6] <- tps[5]
 }
 colnames(tab) <- c("Numero","Temps_Z1","Temps_Z2","Temps_Z3","Temps_Z4","Temps_HZ")
+
+
+graph_HM <- function(num_test){
+  img1 <- readPNG("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/image1.png")
+  img2 <- readPNG("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/image2.png")
+  num_test= num_test
+  data <- coord_split[(liste1[num_test]+1):(liste1[num_test+1]-1),] %>%
+    select(test_item_display_order,gaze_x_percents,gaze_y_percents) %>% 
+    rename(y = gaze_x_percents) %>% 
+    rename(x = test_item_display_order) %>% 
+    rename(time = gaze_y_percents)
+  item_id <- coord_split[1, "item_id"]
+  if(item_id == "7799879c-0ce1-4673-805e-fa022b0e5201" | item_id == "41c3e194-11fe-4ab0-831f-40a02ea6edd5"| item_id=="b1e77d61-b3e7-4f96-87b4-7e4c29d127be" | item_id =="1d0e1fe2-8098-4a87-a555-ce274c9d6efd"){
+    img <- img1
+  }
+  else {
+    img = img2
+  }
+  heatmap <- ggplot(data, aes(x=x, y=-y))+
+    background_image(img) +
+    theme_void()+
+    stat_density_2d(aes(fill = ..density..*10e04, alpha = ..density..*10e05, guide = "none"), 
+                    geom = "raster", 
+                    contour = FALSE) +
+    coord_fixed(xlim = c(0,100),ylim = c(-100,0))+
+    scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", guide = "none") +
+    theme(legend.title = element_blank()) +
+    theme(legend.position='none')
+  print(heatmap)
+}
