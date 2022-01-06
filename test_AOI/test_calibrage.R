@@ -1,4 +1,4 @@
-coord_split <- read.csv("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/zone_test.csv", sep=",")
+coord_split <- read.csv("E:/Master 2/Simulateddata/test_AOI/zone_test.csv", sep=",")
 
 #Séparation des blocs : un bloc correspondant à un ensemble de coordonées de point. 
 #Un bloc correspond à un stimulus vu par une personne
@@ -136,3 +136,20 @@ calcul_temps(13)
 calcul_temps(14)
 calcul_temps(15)
 calcul_temps(16)
+
+
+tab <- data.frame()
+
+nTest <- 16
+
+for (i in 1:nTest){
+   test <- i
+   tab[i,1] <- i
+   tps <- calcul_temps(i)
+   tab[i,2] <- tps[1]
+   tab[i,3] <- tps[2]
+   tab[i,4] <- tps[3]
+   tab[i,5] <- tps[4]
+   tab[i,6] <- tps[5]
+}
+colnames(tab) <- c("Numero","Temps_Z1","Temps_Z2","Temps_Z3","Temps_Z4","Temps_HZ")
