@@ -5,13 +5,14 @@ coord_split <- read.csv("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/zone_test
 
 i=1
 liste1 =vector()
-while (i<dim(coord_split)){
+while (i<dim(coord_split)[1]){
   if (!is.na(coord_split[i,2])){
     liste1 = c(liste1, i)
   }
   i= i+1
 }
 liste1 = c(liste1,dim(coord_split[1]))
+num_test=8
 
 calcul_temps<- function (num_test){
   num_test= num_test
@@ -36,21 +37,22 @@ calcul_temps<- function (num_test){
   
   data_zone <- data.frame(Ordre, zone1, tps_zone1, zone2, tps_zone2, zone3, tps_zone3, zone4, tps_zone4, hors_zone, tps_hors_zone)
   
-  lg_data <- dim(data)
+  lg_data <- dim(data)[1]
   x = data[,1]
   y = data [,2]
   time = data[,3]
-  x[lg_data[1]+1]<-0
-  y[lg_data[1]+1]<-0
+  #x[lg_data + 1]<- 0
+  #y[lg_data + 1]<- 0
   i = 1
   j=1
-  while (i < (lg_data[1]-1)){
+  while (i < (lg_data)){
     if (x[i]>= 0 && x[i]<= 50 && y[i]>= 0 && y[i]<= 50){
       t1 = time[i]
-      while(x[i]>= 0 && x[i]<= 50 && y[i]>= 0 && y[i]<= 50){
+      while(x[i]>= 0 && x[i]<= 50 && y[i]>= 0 && y[i]<= 50 && i < (lg_data)){
         i= i+1
-        t2 = time[i]
       }
+      i = i+1
+      t2 = time[i]
       data_zone[j, "Ordre"] <- j
       data_zone[j,"zone1"]<- 1
       data_zone[j,"tps_zone1"]<- t2-t1
@@ -58,10 +60,11 @@ calcul_temps<- function (num_test){
     
     else if (x[i]>=50 && x[i]<=100 && y[i]>=0 && y[i]<=50){
       t1 = time[i]
-      while(x[i]>=50 && x[i]<=100 && y[i]>=0 && y[i]<=50){
+      while(x[i]>=50 && x[i]<=100 && y[i]>=0 && y[i]<=50 && i < (lg_data)){
         i = i+1
-        t2 = time[i]
       }
+      t2 = time[i]
+      i = i +1
       data_zone[j, "Ordre"] <- j
       data_zone[j,"zone2"]<- 1
       data_zone[j,"tps_zone2"]<- t2-t1
@@ -69,10 +72,11 @@ calcul_temps<- function (num_test){
     
     else if (x[i]>=50 && x[i]<=100 && y[i]>=50 && y[i]<=100){
       t1 = time[i]
-      while(x[i]>=50 && x[i]<=100 && y[i]>=50 && y[i]<=100){
+      while(x[i]>=50 && x[i]<=100 && y[i]>=50 && y[i]<=100 && i < (lg_data)){
         i = i +1
-        t2 = time[i]
       }
+      i = i + 1
+      t2 = time[i]
       data_zone[j, "Ordre"] <- j
       data_zone[j,"zone3"]<- 1
       data_zone[j,"tps_zone3"]<- t2-t1
@@ -80,21 +84,24 @@ calcul_temps<- function (num_test){
     
     else if (x[i]>=0 && x[i]<=50 && y[i]>=50 && y[i]<= 100){
       t1 = time[i]
-      while(x[i]>=0 && x[i]<=50 && y[i]>=50 && y[i]<= 100){
+      while(x[i]>=0 && x[i]<=50 && y[i]>=50 && y[i]<= 100 && i < (lg_data)){
         i = i+1
-        t2 = time[i]
       }
+      i= i + 1
+      t2 = time[i]
       data_zone[j, "Ordre"] <- j
       data_zone[j,"zone4"]<- 1
       data_zone[j,"tps_zone4"]<- t2-t1
     }
     else{
-      t1 = time[i]
-      
-      while(x[i]>100 | x[i]<0 | y[i]> 100 | y[i]< 0){
-        i=i+1
-        t2 = time[i]
+      if (i<lg_data){
+        t1 = time[i]
+        while((i < lg_data) && (x[i]>100 | x[i]<0 | y[i]> 100 | y[i]< 0)){
+            i=i+1
+        }
       }
+      i = i + 1
+      t2 = time[i]
       data_zone[j, "Ordre"] <- j
       data_zone[j,"hors_zone"]<- 1
       data_zone[j,"tps_hors_zone"]<- t2-t1
@@ -111,6 +118,7 @@ calcul_temps<- function (num_test){
   fixation_total_time = apply(fixation_time_aoi,1, sum)
   return(fixation_total_time)
 }
+
 
 calcul_temps(1)
 calcul_temps(2)
