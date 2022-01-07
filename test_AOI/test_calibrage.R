@@ -1,4 +1,11 @@
-coord_split <- read.csv("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/zone_test.csv", sep=",")
+library(ggplot2)
+library(imager)
+library(png)
+library(jpeg)
+library(grid)
+
+
+coord_split <- read.csv("E:/Master 2/Simulateddata/test_AOI/zone_test.csv", sep=",")
 
 #Séparation des blocs : un bloc correspondant à un ensemble de coordonées de point. 
 #Un bloc correspond à un stimulus vu par une personne
@@ -155,9 +162,13 @@ for (i in 1:nTest){
 colnames(tab) <- c("Numero","Temps_Z1","Temps_Z2","Temps_Z3","Temps_Z4","Temps_HZ")
 
 
+
+
+
+
 graph_HM <- function(num_test){
-  img1 <- readPNG("E:/Master 2/Simulateddata/test_AOI/image1.png")
-  img2 <- readPNG("E:/Master 2/Simulateddata/test_AOI/image2.png")
+  img1 = readPNG("E:/Master 2/Simulateddata/test_AOI/image1.png")
+  img2 = readPNG("E:/Master 2/Simulateddata/test_AOI/image2.png")
   num_test= num_test
   data <- coord_split[(liste1[num_test]+1):(liste1[num_test+1]-1),] %>%
     select(test_item_display_order,gaze_x_percents,gaze_y_percents) %>% 
@@ -167,14 +178,15 @@ graph_HM <- function(num_test){
   item_id <- coord_split[1, "item_id"]
   if(item_id == "7799879c-0ce1-4673-805e-fa022b0e5201" | item_id == "41c3e194-11fe-4ab0-831f-40a02ea6edd5"| item_id=="b1e77d61-b3e7-4f96-87b4-7e4c29d127be" | item_id =="1d0e1fe2-8098-4a87-a555-ce274c9d6efd"){
     img <- img1
-  }
-  else {
+    imgR <- rasterGrob(img1, interpolate=TRUE, height = 0.88, width = 0.9, x = 0.5)
+  } else {
     img = img2
+    imgR <- rasterGrob(img2, interpolate=TRUE, height = 0.88, width = 0.9, x = 0.5)
   }
   
-  heatmap <- ggplot(data, aes(x=x, y=-y))+
-
-    background_image(img) +
+  
+  heatmap <- ggplot(data, aes(x=x, y=y))+
+    annotation_custom(imgR) +
     theme_void()+
     stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*10e03), 
                     geom = "raster", 
@@ -183,11 +195,19 @@ graph_HM <- function(num_test){
     scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 3, limits=c(0,8))+
     scale_alpha_continuous(range = c(0, 1), limits = c(0, 2), 
                            guide = guide_none()) +
-    # scale_x_continuous(limits=c(0,100))+
-    # scale_y_continuous(limits=c(0,100)) +
+    scale_x_continuous(limits=c(0,100)) +
+    scale_y_continuous(limits=c(0,100)) +
     theme(legend.title = element_blank()) +
     theme(legend.position='none')
   print(heatmap)
 }
 
-graph_HM(3)
+graph_HM(1)
+
+
+
+
+
+
+
+
