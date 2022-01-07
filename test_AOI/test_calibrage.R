@@ -1,4 +1,4 @@
-coord_split <- read.csv("E:/Master 2/Simulateddata/test_AOI/zone_test.csv", sep=",")
+coord_split <- read.csv("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/zone_test.csv", sep=",")
 
 #Séparation des blocs : un bloc correspondant à un ensemble de coordonées de point. 
 #Un bloc correspond à un stimulus vu par une personne
@@ -120,7 +120,7 @@ calcul_temps<- function (num_test){
 }
 
 
-calcul_temps(1)
+calcul_temps(1), graph_HM(1)
 calcul_temps(2)
 calcul_temps(3)
 calcul_temps(4)
@@ -171,6 +171,7 @@ graph_HM <- function(num_test){
   else {
     img = img2
   }
+  
   heatmap <- ggplot(data, aes(x=x, y=-y))+
     background_image(img) +
     theme_void()+
