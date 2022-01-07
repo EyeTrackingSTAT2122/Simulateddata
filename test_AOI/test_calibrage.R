@@ -156,8 +156,8 @@ colnames(tab) <- c("Numero","Temps_Z1","Temps_Z2","Temps_Z3","Temps_Z4","Temps_H
 
 
 graph_HM <- function(num_test){
-  img1 <- readPNG("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/image1.png")
-  img2 <- readPNG("~/Agro/5A/Projet Ingé/Simulateddata/test_AOI/image2.png")
+  img1 <- readPNG("E:/Master 2/Simulateddata/test_AOI/image1.png")
+  img2 <- readPNG("E:/Master 2/Simulateddata/test_AOI/image2.png")
   num_test= num_test
   data <- coord_split[(liste1[num_test]+1):(liste1[num_test+1]-1),] %>%
     select(test_item_display_order,gaze_x_percents,gaze_y_percents) %>% 
@@ -171,15 +171,21 @@ graph_HM <- function(num_test){
   else {
     img = img2
   }
-  heatmap <- ggplot(data, aes(x=x, y=-y))+
+  heatmap <- ggplot(data, aes(x=x, y=y))+
     background_image(img) +
     theme_void()+
-    stat_density_2d(aes(fill = ..density..*10e04, alpha = ..density..*10e05, guide = "none"), 
+    stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*10e03), 
                     geom = "raster", 
                     contour = FALSE) +
-    coord_fixed(xlim = c(0,100),ylim = c(-100,0))+
-    scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", guide = "none") +
+    coord_fixed(xlim = c(0,100),ylim = c(100,0))+
+    scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 3, limits=c(0,8))+
+    scale_alpha_continuous(range = c(0, 1), limits = c(0, 2), 
+                           guide = guide_none()) +
+    # scale_x_continuous(limits=c(0,100))+
+    # scale_y_continuous(limits=c(0,100)) +
     theme(legend.title = element_blank()) +
     theme(legend.position='none')
   print(heatmap)
 }
+
+graph_HM(3)
