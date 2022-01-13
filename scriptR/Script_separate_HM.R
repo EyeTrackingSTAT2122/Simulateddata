@@ -3,13 +3,19 @@ library(ggplot2)
 library(tidyr)
 library(jpeg)
 library(ggpubr)
-
+library(grid)
 
 #### Définition ----
 
+width <- 960
+
+height <- 624
+
 survey <- read_csv("study/survey.csv")
 
-res <- read.csv("study/split.csv")
+res <- read_csv("study/split.csv")
+
+donnees <- read_csv("study/real_data_split.csv")
 
 img_Brazil <- readJPEG("Plateaux_monde/1_Brazil.jpg")
 
@@ -52,9 +58,21 @@ USA <- "210f7889-a059-414b-819d-4fdfd854b606"
 
 # Code pour join
 
+i=1
+liste1 =vector()
+while (i<dim(res)){
+  if (!is.na(res[i,2])){
+    liste1 = c(liste1, i)
+  }
+  i= i+1
+}
+
+
 Classe <- rep(NA,nrow(res))
 
 res <- cbind(res,Classe)
+
+
 
 
 
@@ -111,15 +129,6 @@ res$Classe <- as.factor(res$Classe)
 
 #Boucle pour séparer les blocs
 
-i=1
-liste1 =vector()
-while (i<dim(res)){
-  if (!is.na(res[i,2])){
-    liste1 = c(liste1, i)
-  }
-  i= i+1
-}
-
 
 for (i in 1:length(liste1)){
   if (i < length(liste1)){
@@ -128,6 +137,8 @@ for (i in 1:length(liste1)){
       rename(y = gaze_x_percents) %>% 
       rename(x = test_item_display_order) %>% 
       rename(time = gaze_y_percents)
+    data$x <- data$x/100 * width
+    data$y <- data$y/100 * height
   }
   else {
     data <- res[(liste1[i]+1):nrow(res),] %>%
@@ -135,169 +146,207 @@ for (i in 1:length(liste1)){
       rename(y = gaze_x_percents) %>% 
       rename(x = test_item_display_order) %>% 
       rename(time = gaze_y_percents)
+    data$x <- data$x/100 * width
+    data$y <- data$y/100 * height
   }
   
   if (res$Classe[liste1[i]] == "Equilibre"){
     if (res$item_id[liste1[i]]==Brazil){
       img <- img_Brazil
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Brazil.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Brazil.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     
     else if (res$item_id[liste1[i]] == Finland){
       img <- img_Finland
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Finland.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Finland.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == France){
       img <- img_France
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"France.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"France.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Greece){
       img <- img_Greece
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Greece.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Greece.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Italy){
       img <- img_Italy
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Italy.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Italy.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == South_Korea){
       img <- img_South_Korea
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"South_Korea.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"South_Korea.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Spain){
       img <- img_Spain
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Spain.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Spain.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Ukraine){
       img <- img_Ukraine
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Ukraine.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"Ukraine.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else {
       img <- img_USA
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"USA.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Equilibre/",res$tester_id[liste1[i]],"USA.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
@@ -305,164 +354,200 @@ for (i in 1:length(liste1)){
   else if (res$Classe[liste1[i]] == "Presque_Equilibre"){
     if (res$item_id[liste1[i]]==Brazil){
       img <- img_Brazil
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Brazil.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Brazil.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     
     else if (res$item_id[liste1[i]] == Finland){
       img <- img_Finland
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Finland.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Finland.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == France){
       img <- img_France
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"France.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"France.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Greece){
       img <- img_Greece
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Greece.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Greece.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Italy){
       img <- img_Italy
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Italy.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Italy.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == South_Korea){
       img <- img_South_Korea
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"South_Korea.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"South_Korea.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Spain){
       img <- img_Spain
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Spain.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Spain.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Ukraine){
       img <- img_Ukraine
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Ukraine.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"Ukraine.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else {
       img <- img_USA
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"USA.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Presque_equilibre/",res$tester_id[liste1[i]],"USA.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
@@ -470,171 +555,205 @@ for (i in 1:length(liste1)){
   else {
     if (res$item_id[liste1[i]]==Brazil){
       img <- img_Brazil
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Brazil.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Brazil.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     
     else if (res$item_id[liste1[i]] == Finland){
       img <- img_Finland
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Finland.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Finland.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == France){
       img <- img_France
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"France.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"France.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Greece){
       img <- img_Greece
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Greece.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Greece.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Italy){
       img <- img_Italy
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Italy.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Italy.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == South_Korea){
       img <- img_South_Korea
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"South_Korea.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"South_Korea.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Spain){
       img <- img_Spain
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Spain.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Spain.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else if (res$item_id[liste1[i]] == Ukraine){
       img <- img_Ukraine
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Ukraine.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"Ukraine.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
     else {
       img <- img_USA
-      heatmap <- ggplot(data, aes(x=x, y=y)) +
-        background_image(img) +
-        # theme_void()+
-        stat_density_2d(aes(fill = ..density..*10e5, alpha = 1), 
+      imgR <- rasterGrob(img, interpolate=TRUE, height = 1, width = 1, x = 0.5)
+      heatmap <- ggplot(data, aes(x=x, y=y))+
+        annotation_custom(imgR) +
+        theme_void()+
+        stat_density_2d(aes(fill = ..density..*10e03, alpha = ..density..*5*10e4), 
                         geom = "raster", 
                         contour = FALSE) +
-        coord_fixed(xlim = c(0,100),ylim = c(100,0))+
-        scale_fill_gradient2(low = "transparent", mid = "yellow", high = "red",midpoint = 40)
-      # theme(legend.title = element_blank()) +
-      # theme(legend.position='none')
-      # scale_x_continuous(limits=c(0,100))+
-      # scale_y_continuous(limits=c(-100, 0))
-      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"USA.png"))
+        coord_fixed(xlim = c(0,width),ylim = c(height,0))+
+        scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", midpoint = 0.00)+
+        scale_alpha_continuous(range = c(0, 1), limits = c(0, 2),
+                               guide = guide_none()) +
+        scale_x_continuous(limits=c(-500,1200))+
+        scale_y_continuous(limits=c(-100,800)) +
+        # coord_cartesian(xlim = c(155,795), ylim = c(530,22)) +
+        theme(legend.title = element_blank()) +
+        theme(legend.position='none')
+      png(file = paste0("study/Test/Pas_equilibre/",res$tester_id[liste1[i]],"USA.png"),width = 980, height = 624)
       plot(heatmap)
       dev.off()
     }
   }
   print(i)
 }
-
-
 
 
