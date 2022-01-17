@@ -1,0 +1,82 @@
+ID,Num_sti,Pays,Classe,Commentaires harmonises
+23,156,Ukraine,Presque equilibre,Gras Trop_sucre Pas_assez_fruits_leg
+11,156,Ukraine,Presque equilibre,Assez_feculents  Assez_viande Un_peu_fruits_leg Assez_sucre
+10,156,Ukraine,Presque equilibre,Assez_feculents fruits_leg Assez_prot Crêpe
+7,156,Ukraine,Pas equilibre,Trop_sucre
+6,156,Ukraine,Equilibre,Puree legumes Un_peu_feculents  Assez_proteines. Un_peu_gras Salade_chou  Assez_fibres Trop_sucre Pas_assez_produits_laitiers
+4,156,Ukraine,Pas equilibre,Trop_gras Trop_sucre Pas_fruits
+3,156,Ukraine,Equilibre,Beaucoup_fibres Trop_sucre Vitamines Assez_feculents. Assez_prot
+2,156,Ukraine,Pas equilibre,Trop_petite_quantite Pas_assez_leg Produits_transformes Celeri
+1,156,Ukraine,Presque equilibre,Paz_assez_quantite Pas_assez_prot Pas_assez_feculents. Assez_chou Trop_confiture Crêpe Trop_sucre
+23,238,Italie,Presque equilibre,Trop_feculents. Assez_prot. Pas_assez_leg
+11,238,Italie,Equilibre,Assez_feculents Pates Pain Assez_leg Assez_salade Assez_tomate Assez_prot Assez_produits_laitiers Fromage Assez_fruits
+10,238,Italie,Presque equilibre,Tres_lourd Gras Assez_fruits_leg
+7,238,Italie,Pas equilibre,Trop_feculents Pas_assez_prot Trop_glucides
+6,238,Italie,Presque equilibre,Un_peu_trop_gras Un_peu_trop_lourd Pas_assez_prot Trop_feculents
+4,238,Italie,Equilibre,Assez_viande leg feculents fruits Trop_pain Pas_trop_gras pas_trop_sucre
+3,238,Italie,Equilibre,Assez_vitamines Assez_fruits Un_peu_trop_feculents Quantite_raisonnable Assez_fibres Mache Tomate Pas_assez_prot
+2,238,Italie,Presque equilibre,Nouilles Sandwich Un_peu_fruits_leg
+1,238,Italie,Equilibre,Assez_feculents Pates Pain Bonne_graisse Salade  Assez_leg Assez_fromage Pas_trop_sucre Assez_fruits
+23,327,USA,Pas equilibre,Trop_sucre Trop_gras Pas_assez_leg
+11,327,USA,Pas equilibre,Trop_viande Gras Trop_sucre Pas_assez_leg Assez_feculents Pas_assez_fruits 
+10,327,USA,Equilibre,Pas_produits_laitiers Gras Assez_fruits_leg
+7,327,USA,Pas equilibre,Produits_transformes Trop_glucides Pas_leg
+6,327,USA,Presque equilibre,Trop_sucre Ketchup Cookie Salade_fruits Trop_gras
+4,327,USA,Presque equilibre,Fruits_industriels Tros_gras Trop_sucre
+3,327,USA,Pas equilibre,Trop_gras Trop_sucre Cookie Salade_fruits Pas_assez_leg Assez_feculents
+2,327,USA,Pas equilibre,Nuggets_transformes Salade_fruits Petits_pois Couleur_non_naturelle Produits_transformes Trop_gras Pas_assez_leg
+1,327,USA,Presque equilibre,Assez_feculent Assez_leg Trop_viande Beaucoup_sucre ketchup Salade_fruits Cookie Pas_assez_fruits Produits_transformes
+23,352,Bresil,Presque equilibre,Trop_feculents Pas_assez_prot
+11,352,Bresil,Presque equilibre,Assez_feculents Assez_leg Assez_fruits Pas_assez_viande
+10,352,Bresil,Pas equilibre,Lourd Gras Pain Riz Viande Assez_leg Sucre
+7,352,Bresil,Pas equilibre,Trop_feculents Trop_prot
+6,352,Bresil,Equilibre,Beaucoup_legumineuses Beaucoup_feculents  Un_peu_trop_prot Pas_assez_leg
+4,352,Bresil,Equilibre,Feculents Viande Salade Trop_sucre Trop_pain
+3,352,Bresil,Equilibre,Visuel_equilibre Beaucoup_feculents Beaucoup_fibres Assez_prot Assez_vitamines Legumineuses
+2,352,Bresil,Pas equilibre,Trop_luisant Trop_gras Aliments_frits Haricots_rouges
+1,352,Bresil,Equilibre,Assez_feculents Assez_viande Assez_leg  Assez_sucre Assez_fibres Pas_trop_sauce Pas_trop_sale Pas_trop_gras Pas_trop_sucre Beaucoup_feculents
+23,421,France,Equilibre,Beaucoup_prot Un_peu_feculents Beaucoup_leg
+11,421,France,Presque equilibre,Assez_leg Assez_fruits Assez_produits_laitiers Trop_viande
+10,421,France,Pas equilibre,Pas_assez_feculents Calcium Fromage Trop_gras Assez_fruits_leg
+7,421,France,Presque equilibre,Pas_assez_feculents Pas_assez_leg Grosse_quantite
+6,421,France,Equilibre,Trop_viande Trop_fromage Beaucoup_fruits
+4,421,France,Presque equilibre,Pas_feculents Assez_leg Fruits Viande Produits_sains
+3,421,France,Equilibre,Assez_prot Vitamines Fruits Beaucoup_fibres Assez_produits_laitiers Assez_feculents Patate_douce
+2,421,France,Equilibre,Pas_trop_transformes Fruits_leg Produits_laitiers Viande
+1,421,France,Pas equilibre,Pas_assez_feculents Trop_viande viande_rouge Assez_produits_laitiers
+23,489,Coree du Sud,Equilibre,Beaucoup_leg Un_peu_prot Un_peu_feculents
+11,489,Coree du Sud,Presque equilibre,Un_peu_trop_leg Pas_assez_fruits Pas_assez_prot Assez_feculents
+10,489,Coree du Sud,Equilibre,Proteines Feculents Legumes. Pas_gras Pas_sucre
+7,489,Coree du Sud,Equilibre,Assez_leg Leg_verts Beaucoup_feculents Assez_lipides
+6,489,Coree du Sud,Presque equilibre,Pas_assez_prot Pas_plaisir Assez_leg
+4,489,Coree du Sud,Presque equilibre,Beaucoup_legumes Huile Trop_gras Pas_assez_prot
+3,489,Coree du Sud,Presque equilibre,Beaucoup_fibres Assez_feculents Pas_assez_vitamines Pas_prot
+2,489,Coree du Sud,Equilibre,Beaucoup_leg Un_peu_feculents Un_peu_prot Sauce Gras Varie
+1,489,Coree du Sud,Equilibre,Assez_feculents Riz. Assez_prot Œufs Chou Microbiote Assez_legumes Soupe Assez_graisse Assez_sucre
+23,672,Finlande,Equilibre,Beaucoup_fruits_leg Tres_peu_prot Assez_feculents Un_peu_sucre
+11,672,Finlande,Presque equilibre,Assez_leg Soupe Betterave Assez_fruits
+10,672,Finlande,Presque equilibre,Pas_assez_produits_laitiers Legumes Feculents Crêpe Pain Pass_assez_prot 
+7,672,Finlande,Presque equilibre,Trop_feculents Trop_glucides Sucres_rapides
+6,672,Finlande,Pas equilibre,Pas_prot Trop_sucre Betterave Crêpe Soupe Trop_feculents 
+4,672,Finlande,Presque equilibre,Pas_prot 
+3,672,Finlande,Presque equilibre,Assez_sucre Pas_assez_prot 
+2,672,Finlande,Presque equilibre,Legumes_transformes Pain Crêpe Trop_sucre Un_peu_fruits Sauce
+1,672,Finlande,Equilibre,Assez_feculents Patate_douce Pain Assez_leg Betterave Soupe Pas_assez_viande Pas_assez_prot Assez_sucre Assez_mineraux 
+23,756,Espagne,Equilibre,Beaucoup_feculents Assez_fruits_leg Peu_prot
+11,756,Espagne,Equilibre,Assez_feculents Pain Crêpe Pas_assez_produits_laitiers Pas_assez_prot
+10,756,Espagne,Presque equilibre,Pas_prot Leg Sucre_naturel Pas_assez_prot
+7,756,Espagne,Presque equilibre,Doublon_feculents Trop_feculents Graines Beaucoup_herbes Un_peu_crudites Assez_prot
+6,756,Espagne,Equilibre,Pas_assez_leg Pas_assez_prot Pain_complet 
+4,756,Espagne,Equilibre,Repas_complet Assez_viande Crevettes Assez_feculents Fruits Leg Assez_pain Soupe
+3,756,Espagne,Equilibre,Assez_prot Assez_fibres Soupe Poivron Assez_feculents Riz Pain_cereales Assez_vitamines Citron
+2,756,Espagne,Equilibre,Un_peu_viande Un_peu_feculents Un_peu_leg Un_peu_pain Graines 
+1,756,Espagne,Equilibre,Assez_feculents Riz Pain Fibres Mineraux Soupe Assez_legumes Assez_prot ok_sel.
+23,980,Grèce,Equilibre,Assez_feculents Un_peu_prot Assez_fruits_leg
+11,980,Grèce,Equilibre,Assez_proteines Assez_feculents Assez_legumes Assez_fruits Assez_produits_laitiers
+10,980,Grèce,Equilibre,Assez_fruits_leg Assez_produits_laitiers Assez_prot Assez_feculents
+7,980,Grèce,Equilibre,Assez_glucides Assez_proteines Fruits_frais Vitamines Legumes_crus Papillotes_syriennes Assez_prot
+6,980,Grèce,Equilibre,Assez_prot Assez_produit_laitiers Beaucoup_fruits_leg Assez_feculents
+4,980,Grèce,Equilibre,Assez_fruits_leg Assez_viande Assez_feculents Pas_gras Pas_sucre 
+3,980,Grèce,Presque equilibre,Assez_feculents Assez_fromage Beaucoup_vitamines Assez_fibres Trop_produits_laitiers Pas_assez_proteine
+2,980,Grèce,Equilibre,Plein_couleurs Beaucoup_fruits 
+1,980,Grèce,Equilibre,Assez_feculents Assez_viande Assez_legumes Concombre Tomate Riz Assez_produits_laitiers Assez_fruits Vitamines Mineraux Grenade 
