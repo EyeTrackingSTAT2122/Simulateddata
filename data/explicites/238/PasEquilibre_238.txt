@@ -1,0 +1,16 @@
+Trop_feculents
+Assez_proteines
+Trop_fruits
+Pas_assez_legumes
+Pas_assez_produits_laitiers
+Trop_friture
+Trop_feculents
+Assez_legumes
+Assez_fruits
+Assez_proteines
+Trop_feculents
+Pas_assez_gras
+Trop_sucre
+Trop_fruits
+Assez_legumes
+Assez_proteines

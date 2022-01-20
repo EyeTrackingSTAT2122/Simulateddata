@@ -1,0 +1,6 @@
+Pas_assez_proteines
+Trop_legumes
+Pas_assez_sucre
+Assez_feculents
+Pas_assez_fruits
+Trop_fibres
