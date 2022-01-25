@@ -1,0 +1,46 @@
+﻿id_item;nom_item;Num_zone;Nom_zone;x1;w;x2;y1;h;y2
+34359006-f70f-438e-85d0-420cf2fe6944;Ukraine;1;legumes;60;19;79;46;34;80
+34359006-f70f-438e-85d0-420cf2fe6944;Ukraine;2;feculents;40;19;59;48;32;80
+34359006-f70f-438e-85d0-420cf2fe6944;Ukraine;3;feculents;20;20;40;47;32;79
+34359006-f70f-438e-85d0-420cf2fe6944;Ukraine;4;legumes;58;25;83;7;37;44
+34359006-f70f-438e-85d0-420cf2fe6944;Ukraine;5;feculents/proteines;23;30;53;9;37;46
+20f3c152-6ebf-49db-8e1a-00eebd99feb6;Finlande;1;feculents/fruits;21;38;59;12;33;45
+20f3c152-6ebf-49db-8e1a-00eebd99feb6;Finlande;2;legumes;58;25;83;9;36;45
+20f3c152-6ebf-49db-8e1a-00eebd99feb6;Finlande;3;legumes;21;20;41;45;35;80
+20f3c152-6ebf-49db-8e1a-00eebd99feb6;Finlande;4;legumes;41;19;60;47;33;80
+20f3c152-6ebf-49db-8e1a-00eebd99feb6;Finlande;5;feculents;58;21;79;44;35;79
+213479f7-39af-4b83-b0e9-4ba473d27429;Espagne;1;fruits;18;20;38;8;31;39
+213479f7-39af-4b83-b0e9-4ba473d27429;Espagne;2;legumes;40;18;58;11;30;41
+213479f7-39af-4b83-b0e9-4ba473d27429;Espagne;3;legumes;57;24;81;8;37;45
+213479f7-39af-4b83-b0e9-4ba473d27429;Espagne;4;feculents;20;22;42;43;36;79
+213479f7-39af-4b83-b0e9-4ba473d27429;Espagne;5;feculents/proteines;42;34;76;43;36;79
+7bdf6ed6-acf9-4a7b-84fe-7e4f96f9582a;France;1;fruits;22;19;41;11;33;44
+7bdf6ed6-acf9-4a7b-84fe-7e4f96f9582a;France;2;legumes;41;19;60;11;33;44
+7bdf6ed6-acf9-4a7b-84fe-7e4f96f9582a;France;3;proteines;55;23;78;8;41;49
+7bdf6ed6-acf9-4a7b-84fe-7e4f96f9582a;France;4;proteines/ fruits;40;36;76;45;33;78
+7bdf6ed6-acf9-4a7b-84fe-7e4f96f9582a;France;5;legumes;20;23;43;42;20;62
+cc2a8b56-732c-4e4c-a058-248783b68587;Corée du sud;1;legumes;22;19;41;11;32;43
+cc2a8b56-732c-4e4c-a058-248783b68587;Corée du sud;2;legumes;41;18;59;9;32;41
+cc2a8b56-732c-4e4c-a058-248783b68587;Corée du sud;3;proteines;58;24;82;8;36;44
+cc2a8b56-732c-4e4c-a058-248783b68587;Corée du sud;4;legumes;22;22;44;46;34;80
+cc2a8b56-732c-4e4c-a058-248783b68587;Corée du sud;5;feculents/proteines;40;37;77;45;35;80
+dd13fcba-0ae1-43d3-9d32-1672ed84f151;USA;1;feculents;20;22;42;11;36;47
+dd13fcba-0ae1-43d3-9d32-1672ed84f151;USA;2;legumes;41;17;58;14;29;43
+dd13fcba-0ae1-43d3-9d32-1672ed84f151;USA;3;fruits;60;20;80;11;30;41
+dd13fcba-0ae1-43d3-9d32-1672ed84f151;USA;4;feculents;21;21;42;46;33;79
+dd13fcba-0ae1-43d3-9d32-1672ed84f151;USA;5;proteines;41;36;77;43;37;80
+6afda059-04a5-4308-b776-a532ed142284;Italie;1;fruits;20;20;40;8;39;47
+6afda059-04a5-4308-b776-a532ed142284;Italie;2;legumes;40;20;60;10;32;42
+6afda059-04a5-4308-b776-a532ed142284;Italie;3;feculents;57;19;76;11;34;45
+6afda059-04a5-4308-b776-a532ed142284;Italie;4;feculents;21;21;42;46;34;80
+6afda059-04a5-4308-b776-a532ed142284;Italie;5;proteines;41;37;78;46;33;79
+f61f9030-d814-495d-af95-0e643697de64;Brésil;1;feculent;16;19;35;8;36;44
+f61f9030-d814-495d-af95-0e643697de64;Brésil;2;legumes;33;26;59;8;36;44
+f61f9030-d814-495d-af95-0e643697de64;Brésil;3;fruits;57;22;79;11;32;43
+f61f9030-d814-495d-af95-0e643697de64;Brésil;4;proteines;21;22;43;43;34;77
+f61f9030-d814-495d-af95-0e643697de64;Brésil;5;feculents;41;37;78;44;34;78
+5445f170-12c1-48fc-9563-3709dd2993b0;Grèce;1;proteines/fruits;21;18;39;11;32;43
+5445f170-12c1-48fc-9563-3709dd2993b0;Grèce;2;legumes;40;18;58;10;32;42
+5445f170-12c1-48fc-9563-3709dd2993b0;Grèce;3;feculents;58;10;68;20;32;52
+5445f170-12c1-48fc-9563-3709dd2993b0;Grèce;4;fruits;19;22;41;43;37;80
+5445f170-12c1-48fc-9563-3709dd2993b0;Grèce;5;feculents/proteines;41;35;76;43;37;80
