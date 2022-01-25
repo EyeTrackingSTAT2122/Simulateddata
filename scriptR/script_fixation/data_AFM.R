@@ -1,3 +1,5 @@
+library(readr)
+library(sjmisc)
 library(tidyverse)
 library(dplyr)
 library(FactoMineR)
@@ -17,17 +19,36 @@ concord <- read_csv("data/data_support/concordances.csv")
 data_fixation<- concord %>% 
   full_join(data_fixation, by = c("id_tester", "num_stimulus", "id_item"))
 
-i =1
-j=1
-supp = vector()
+last_first <- concord %>% 
+  full_join(last_first, by = c("id_tester", "id_item"))
+
+
+supp1 = vector()
 for (i in 1:nrow(data_fixation)){
   for (j in 1:nrow(suppression)){
     if(data_fixation$id[i] == suppression$id[j] && data_fixation$num_stimulus[i] == suppression$num_stimulus[j]){
-      supp <- c(supp, i)
+      supp1 <- c(supp1, i)
     }
   }
 }
 
+data_fixation <- data_fixation[-supp1,]
+data.frame(data_fixation)
+write.table(data_fixation, "data/data_fix_finales/data_finales_supp.csv", row.names=FALSE, sep=",",dec=".", na=" ")
+
+
+supp2 = vector()
+for (i in 1:nrow(last_first)){
+  for (j in 1:nrow(suppression)){
+    if(last_first$id[i] == suppression$id[j] && last_first$num_stimulus[i] == suppression$num_stimulus[j]){
+      supp2 <- c(supp2, i)
+    }
+  }
+}
+
+last_first <- last_first[-supp2,]
+data.frame(last_first)
+write.table(data_fixation, "data/data_fix_finales/last_first_supp.csv", row.names=FALSE, sep=",",dec=".", na=" ")
 
 #Tableau des classe stimulus X tester
 classe_ind<- classes %>% 
@@ -103,7 +124,7 @@ data_fix <- data_fixation %>%
 
 #Jointure jeux de données 1ère et dernière fixation
 data_fixation2 <- data_fixation %>% 
-  full_join(last_first, by =c("id_item", "id_tester")) %>% 
+  full_join(last_first, by =c("id_item", "id_tester", "num_stimulus")) %>% 
   replace(is.na(.), 0) %>%
   mutate(num_stimulus = as.factor(num_stimulus)) %>% 
   dplyr::select(num_stimulus, first_zone, last_zone) %>%
