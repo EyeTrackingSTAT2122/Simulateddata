@@ -1,4 +1,0 @@
-Trop_feculents
-Trop_fruits
-Pas_assez_legumes
-Assez_proteines
