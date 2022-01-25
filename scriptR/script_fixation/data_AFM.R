@@ -48,7 +48,7 @@ for (i in 1:nrow(last_first)){
 
 last_first <- last_first[-supp2,]
 data.frame(last_first)
-write.table(data_fixation, "data/data_fix_finales/last_first_supp.csv", row.names=FALSE, sep=",",dec=".", na=" ")
+write.table(last_first, "data/data_fix_finales/last_first_supp.csv", row.names=FALSE, sep=",",dec=".", na=" ")
 
 #Tableau des classe stimulus X tester
 classe_ind<- classes %>% 
