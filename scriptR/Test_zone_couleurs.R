@@ -5,48 +5,79 @@ library(jpeg)
 library(ggpubr)
 library(grid)
 library(sjmisc)
+library(readr)
 
-set.seed(123)
+survey <- read_csv("study/survey_study.csv")
+survey_2 <- read_csv("study/survey_study2.csv")
 
-test_zone_couleurs <- read_delim("scriptR/study/test_zone_couleurs.csv", 
-                                 delim = ";", escape_double = FALSE, trim_ws = TRUE)
+surv <- rbind(survey,survey_2)
 
-test_zone_couleurs <- as.data.frame(test_zone_couleurs)
-i <- 1
+data <- read_csv("E:/Master 2/Simulateddata/data/data_fixation_fin.csv")
 
-#On retire les données de calibration
+Classe <- rep(NA,nrow(data))
 
-while (str_contains(test_zone_couleurs$Pays[i], "Calibration") == TRUE){
-  test_zone_couleurs <- test_zone_couleurs[-i,]
+data <- cbind(data,Classe)
+
+#----
+for (i in 1:nrow(data)){
+  for (j in 1:nrow(surv)){
+    if (data$id_tester[i] == surv$tester_id[j]) {
+      if(data$pays[i]=="Brazil"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ? - 352.jpg`[j]
+      }
+      else if(data$pays[i]=="Finland"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ?  - 672.jpg`[j]
+      }
+      else if(data$pays[i]=="France"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ?  - 421.jpg`[j]
+      }
+      else if(data$pays[i]=="Greece"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ?  - 980.jpg`[j]
+      }
+      else if(data$pays[i]=="Italy"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ? - 238.jpg`[j]
+      }
+      else if(data$pays[i]=="Spain"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ?  - 756.jpg`[j]
+      }
+      else if(data$pays[i]=="South Korea"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ?  - 489.jpg`[j]
+      }
+      else if(data$pays[i]=="Ukraine"){
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilibré ?  - 156.jpg`[j]
+      }
+      else {
+        data$Classe[i] <- surv$`D'après vous, le plateau est-il équilbré ?  - 327.jpg`[j]
+      }
+    } 
+  }
 }
-
-data <- test_zone_couleurs
-
-tZ1 <- runif(nrow(test_zone_couleurs), 0, 30)
-tZ2 <- runif(nrow(test_zone_couleurs), 0, 30)
-tZ3 <- runif(nrow(test_zone_couleurs), 0, 30)
-tZ4 <- runif(nrow(test_zone_couleurs), 0, 30)
-tZ5 <- runif(nrow(test_zone_couleurs), 0, 30)
-
-data$tz1 <- tZ1 #temps zone HG
-data$tz2 <- tZ2 #temps zone HM
-data$tz3 <- tZ3 #temps zone HD
-data$tz4 <- tZ4 #temps zone BG
-data$tz5 <- tZ5 #temps zone BD
-
-tTot <- rep(0,nrow(data))
-
-#Calcul du temps total
 
 for (i in 1:nrow(data)){
-  tTot[i] <- data$tz1[i] + data$tz2[i] + data$tz3[i] + data$tz4[i] + data$tz5[i]
+  if (data$Classe[i] == "Il est équilibré"){
+    data$Classe[i] <- "Equilibre"
+  }
+  else if (data$Classe[i] == "Il n'est pas équilibré"){
+    data$Classe[i] <- "Pas_Equilibre"
+  }
+  else {
+    data$Classe[i] <- "Presque_Equilibre"
+  }
 }
 
-data$tTot <- tTot #temps total passé sur l'image
+data$Classe <- as.factor(data$Classe)
 
-# img_Spain <- readJPEG("Plateaux_monde/6_Spain.jpg")
 
-# img <- img_Spain
+colnames(data) <- c("id_tester","id_item","Pays","num_stim","tz1","tz2","tz3","tz4","tz5","tTot","Classe")
+
+# data$tz1  #temps zone HG
+# data$tz2  #temps zone HM
+# data$tz3  #temps zone HD
+# data$tz4  #temps zone BG
+# data$tz5  #temps zone BD
+# 
+# data$tTot #temps total passé sur l'image
+
 
 get_img <- function(Pays, AlFec = 0, AlLeg = 0, AlProt = 0, AlFru = 0, AlProt_Fec = 0, AlProt_Leg = 0, AlFec_Fru = 0, AlLait_Fru = 0){
   colPlateau <- rgb(220/255,220/255,220/255)
@@ -177,26 +208,124 @@ get_img <- function(Pays, AlFec = 0, AlLeg = 0, AlProt = 0, AlFru = 0, AlProt_Fe
   
 }
 
-i <- 1
+get_max <- function(Leg = 0, Fru = 0, Prot = 0, Fec = 0, Prot_Fec = 0, Prot_Leg = 0, Fec_Fru = 0,Lait_Fru = 0){
+  vec <- c(Leg, Fru, Prot, Fec, Prot_Fec, Prot_Leg, Fec_Fru, Lait_Fru)
+  
+  mx <- which.max(vec)
+  
+  if (mx == 1){
+    AlFec <<- 0
+    AlLeg <<- 1
+    AlProt <<- 0
+    AlFru <<- 0
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 0
+  }
+  else if (mx == 2) {
+    AlFec <<- 0
+    AlLeg <<- 0
+    AlProt <<- 0
+    AlFru <<- 1
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 0
+  }
+  else if (mx == 3) {
+    AlFec <<- 0
+    AlLeg <<- 0
+    AlProt <<- 1
+    AlFru <<- 0
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 0
+  }
+  else if (mx == 4) {
+    AlFec <<- 1
+    AlLeg <<- 0
+    AlProt <<- 0
+    AlFru <<- 0
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 0
+  }
+  else if (mx == 5) {
+    AlFec <<- 0
+    AlLeg <<- 0
+    AlProt <<- 0
+    AlFru <<- 0
+    AlProt_Fec <<- 1
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 0
+  }
+  else if (mx == 6) {
+    AlFec <<- 0
+    AlLeg <<- 0
+    AlProt <<- 0
+    AlFru <<- 0
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 1
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 0
+  }
+  else if (mx == 7) {
+    AlFec <<- 0
+    AlLeg <<- 0
+    AlProt <<- 0
+    AlFru <<- 0
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 1
+    AlLait_Fru <<- 0
+  } else {
+    AlFec <<- 0
+    AlLeg <<- 0
+    AlProt <<- 0
+    AlFru <<- 0
+    AlProt_Fec <<- 0
+    AlProt_Leg <<- 0
+    AlFec_Fru <<- 0
+    AlLait_Fru <<- 1
+  }
+}
+
 
 for (i in 1:nrow(data)){
-  choice <- runif(1)
   if (data$Pays[i] == "Ukraine"){
     
     Leg <- (data$tz1[i] + data$tz4[i]) / data$tTot[i]
     Fec <- (data$tz2[i] + data$tz3[i])/ data$tTot[i]
     Prot_Fec <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_Ukraine.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec = Fec, Prot_Fec = Prot_Fec)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 5){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_Ukraine.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_Ukraine.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_Ukraine.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 5){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_Ukraine.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_Ukraine.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_Ukraine.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 5){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_Ukraine.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_Ukraine.png"),width = 980, height = 980)
+      }
     }
    
-    get_img(Pays = "Ukraine", AlFec = Fec, AlLeg = Leg, AlProt_Fec = Prot_Fec)
+    get_img(Pays = "Ukraine", AlFec = AlFec, AlLeg = AlLeg, AlProt_Fec = AlProt_Fec)
     dev.off()
   }
   else if (data$Pays[i] == "Brazil"){
@@ -206,16 +335,30 @@ for (i in 1:nrow(data)){
     Fru <- data$tz3[i] / data$tTot[i]
     Prot_Leg <- data$tz4[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_Brazil.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec = Fec, Fru = Fru, Prot_Leg = Prot_Leg)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 40){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_Brazil.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_Brazil.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_Brazil.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 40){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_Brazil.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_Brazil.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_Brazil.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 40){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_Brazil.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_Brazil.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "Brazil", AlFec = Fec, AlLeg = Leg, AlProt_Leg = Prot_Leg, AlFru = Fru)
+    get_img(Pays = "Brazil", AlFec = AlFec, AlLeg = AlLeg, AlProt_Leg = AlProt_Leg, AlFru = AlFru)
     dev.off()
   }
   else if (data$Pays[i] == "France"){
@@ -225,16 +368,30 @@ for (i in 1:nrow(data)){
     Fru <- data$tz1[i] / data$tTot[i]
     Lait_Fru <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_France.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fru = Fru, Prot = Prot, Lait_Fru = Lait_Fru)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 20){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_France.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_France.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_France.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 20){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_France.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_France.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_France.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 20){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_France.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_France.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "France", AlFru = Fru, AlProt = Prot, AlLeg = Leg, AlLait_Fru = Lait_Fru)
+    get_img(Pays = "France", AlFru = AlFru, AlProt = AlProt, AlLeg = AlLeg, AlLait_Fru = AlLait_Fru)
     dev.off()
   }
   else if (data$Pays[i] == "Finland"){
@@ -243,16 +400,30 @@ for (i in 1:nrow(data)){
     Leg <- (data$tz2[i] + data$tz3[i] + data$tz4[i]) / data$tTot[i]
     Fec <- data$tz1[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_Finland.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec_Fru = Fec_Fru, Fec = Fec)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 10){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_Finland.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_Finland.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_Finland.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 10){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_Finland.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_Finland.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_Finland.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 10){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_Finland.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_Finland.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "Finland", AlFec = Fec, AlLeg = Leg, AlFec_Fru = Fec_Fru)
+    get_img(Pays = "Finland", AlFec = AlFec, AlLeg = AlLeg, AlFec_Fru = AlFec_Fru)
     dev.off()
   }
   else if (data$Pays[i] == "Greece"){
@@ -263,16 +434,30 @@ for (i in 1:nrow(data)){
     Fru <- data$tz4[i] / data$tTot[i]
     Prot_Fec <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_Greece.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec = Fec, Prot_Fec = Prot_Fec, Lait_Fru = Lait_Fru, Fru = Fru)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 45){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_Greece.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_Greece.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_Greece.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 45){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_Greece.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_Greece.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_Greece.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 45){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_Greece.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_Greece.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "Greece", AlFec = Fec, AlLeg = Leg, AlProt_Fec = Prot_Fec, AlLait_Fru = Lait_Fru, AlFru = Fru)
+    get_img(Pays = "Greece", AlFec = AlFec, AlLeg = AlLeg, AlProt_Fec = AlProt_Fec, AlLait_Fru = AlLait_Fru, AlFru = AlFru)
     dev.off()
   }
   else if (data$Pays[i] == "Italy"){
@@ -282,16 +467,30 @@ for (i in 1:nrow(data)){
     Fru <- data$tz1[i] / data$tTot[i]
     Prot_Leg <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_Italy.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec = Fec, Fru = Fru, Prot_Leg)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 35){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_Italy.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_Italy.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_Italy.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 35){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_Italy.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_Italy.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_Italy.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 35){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_Italy.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_Italy.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "Italy", AlFec = Fec, AlLeg = Leg, AlProt_Leg = Prot_Leg, AlFru = Fru)
+    get_img(Pays = "Italy", AlFec = AlFec, AlLeg = AlLeg, AlProt_Leg = AlProt_Leg, AlFru = AlFru)
     dev.off()
   }
   else if (data$Pays[i] == "USA"){
@@ -301,16 +500,30 @@ for (i in 1:nrow(data)){
     Fru <- data$tz3[i] / data$tTot[i]
     Prot <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_USA.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec = Fec, Prot = Prot, Fru = Fru)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 30){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_USA.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_USA.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_USA.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 30){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_USA.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_USA.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_USA.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 30){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_USA.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_USA.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "USA", AlFec = Fec, AlLeg = Leg, AlFru = Fru, AlProt = Prot)
+    get_img(Pays = "USA", AlFec = AlFec, AlLeg = AlLeg, AlFru = AlFru, AlProt = AlProt)
     dev.off()
   }
   else if (data$Pays[i] == "Spain"){
@@ -320,16 +533,30 @@ for (i in 1:nrow(data)){
     Fru <- data$tz1[i] / data$tTot[i]
     Prot_Fec <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_Spain.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Fec = Fec, Prot_Fec = Prot_Fec, Fru = Fru)
+    
+    if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 15){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_Spain.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_Spain.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_Spain.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 15){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_Spain.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_Spain.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_Spain.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 15){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_Spain.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_Spain.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "Spain", AlFec = Fec, AlLeg = Leg, AlProt_Fec = Prot_Fec, AlFru = Fru)
+    get_img(Pays = "Spain", AlFec = AlFec, AlLeg = AlLeg, AlProt_Fec = AlProt_Fec, AlFru = AlFru)
     dev.off()
   } else {
     
@@ -337,16 +564,30 @@ for (i in 1:nrow(data)){
     Prot_Leg <- data$tz3[i] / data$tTot[i]
     Prot_Fec <- data$tz5[i] / data$tTot[i]
     
-    if (choice < 0.33){
-      png(file = paste0("scriptR/test_couleurs/Pas_equilibre/",data$tester_id[i],"_South_Korea.png"),width = 980, height = 980)
+    get_max(Leg = Leg, Prot_Fec = Prot_Fec, Prot_Leg = Prot_Leg)
+    
+if (data$Classe[i] == "Pas_Equilibre"){
+      if (length(list.files("zone_max/train/Pas_equilibre")) < 25){
+        png(file = paste0("zone_max/train/Pas_equilibre/",data$id_tester[i],"_South_Korea.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Pas_equilibre/",data$id_tester[i],"_South_Korea.png"),width = 980, height = 980)
+      }
     } 
-    else if (choice > 0.67){
-      png(file = paste0("scriptR/test_couleurs/Equilibre/",data$tester_id[i],"_South_Korea.png"),width = 980, height = 980)
+    else if (data$Classe[i] == "Equilibre"){
+      if (length(list.files("zone_max/train/Equilibre")) < 25){
+        png(file = paste0("zone_max/train/Equilibre/",data$id_tester[i],"_South_Korea.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Equilibre/",data$id_tester[i],"_South_Korea.png"),width = 980, height = 980)
+      }
     } else {
-      png(file = paste0("scriptR/test_couleurs/Presque_equilibre/",data$tester_id[i],"_South_Korea.png"),width = 980, height = 980)
+      if (length(list.files("zone_max/train/Presque_equilibre")) < 25){
+        png(file = paste0("zone_max/train/Presque_equilibre/",data$id_tester[i],"_South_Korea.png"),width = 980, height = 980)
+      } else {
+        png(file = paste0("zone_max/test/Presque_equilibre/",data$id_tester[i],"_South_Korea.png"),width = 980, height = 980)
+      }
     }
     
-    get_img(Pays = "South_Korea", AlLeg = Leg, AlProt_Leg = Prot_Leg, AlProt_Fec = Prot_Fec)
+    get_img(Pays = "South_Korea", AlLeg = AlLeg, AlProt_Leg = AlProt_Leg, AlProt_Fec = AlProt_Fec)
     dev.off()
   }
 }
