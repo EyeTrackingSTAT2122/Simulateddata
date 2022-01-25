@@ -4,10 +4,10 @@ library(FactoMineR)
 library(nnet)
 library(Rcmdr)
 library(factoextra)
-data1 <- read_csv("data/data_dim_pct_fin.csv")
-data2 <- read_csv("data/Real_eye/resume_final.csv")
-data3 <- read_csv("data/Real_eye/resume_sauvetage.csv")
-explicite <- read_csv("data/explicite.csv")
+data1 <- read_csv("../data/data_dim_pct_fin.csv")
+data2 <- read_csv("../data/Real_eye/resume_final.csv")
+data3 <- read_csv("../data/Real_eye/resume_sauvetage.csv")
+# explicite <- read_csv("../data/explicite.csv")
 
 classes <- rbind(data2, data3)
 
@@ -45,7 +45,7 @@ data_join <- data1 %>%
 
 
 
-write.table(data_join, "data/Zones_Classes.csv", row.names=FALSE, sep=",",dec=".", na=" ")
+# write.table(data_join, "data/Zones_Classes.csv", row.names=FALSE, sep=",",dec=".", na=" ")
 
 data_PCA <- data_join %>% 
   select(starts_with("pct"), cat_max, classe_stimuli ) 
