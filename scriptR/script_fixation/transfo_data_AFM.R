@@ -6,11 +6,13 @@ library(dplyr)
 library(FactoMineR)
 library(readr)
 library(tm)
-tab <- read.csv("data/data_fix_finales/fixations.csv")
+tab <- read.csv("data/data_fix_finales/fixations_20.csv")
 classe_ind <-  read_csv("data/data_fix_finales/data_supp/classe_ind_supp.csv")
 concordances_zones <- read_delim("data/data_support/concordances_zones.csv", 
                                  delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
+concordances<- read_delim("data/data_support/concordances_pays.csv", 
+                                 delim = ",", escape_double = FALSE, trim_ws = TRUE)
 
 tab <- tab %>% 
   mutate(zone = as.factor(zone)) %>% 
@@ -50,26 +52,24 @@ tab3 <- concordances_zones %>%
   full_join(tab2, by = c("id_form", "num")) %>% 
   rename(id = id_form) %>% 
   rename(num_stimulus = num) %>% 
-  full_join(classe_ind, by = c("num_stimulus", "id"))
+  full_join(classe_ind, by = c("num_stimulus", "id")) %>% 
+  full_join(concordances, by=c("num_stimulus", "id")) %>%
+  group_by(num_stimulus, id)%>%
+  mutate(tot_fix = sum(feculents_fix+proteines_fix+legumes_fix+fruits_fix))%>%
+  mutate(pct_feculents_fix = (feculents_fix/tot_fix)*100)%>% 
+  mutate(pct_proteines_fix = (proteines_fix/tot_fix)*100)%>% 
+  mutate(pct_legumes_fix = (legumes_fix/tot_fix)*100)%>% 
+  mutate (pct_fruits_fix = (fruits_fix/tot_fix)*100)%>%
+  mutate(tot_tps = sum(feculents_tps+proteines_tps+legumes_tps+fruits_tps))%>%
+  mutate(pct_feculents_tps = (feculents_tps/tot_tps)*100)%>% 
+  mutate(pct_proteines_tps = (proteines_tps/tot_tps)*100)%>% 
+  mutate(pct_legumes_tps = (legumes_tps/tot_tps)*100)%>% 
+  mutate (pct_fruits_tps = (fruits_tps/tot_tps)*100) 
 
+write.table(tab3, "data/data_fix_finales/data_supp/data_finales_supp_classes_2°.csv", row.names=FALSE, sep=",",dec=".", na=" ")
 
-classe_id <- tab3 %>%
-  dplyr::select(num_stimulus, id, classe) %>%
-  pivot_wider(names_from = id, values_from = classe) %>%
-  mutate(num_stimulus = as.factor(num_stimulus)) %>% 
-  data.frame()
+#Jointure pour avoir le pays
 
-classe_stimuli <- tab3 %>% 
-  dplyr::select(num_stimulus, classe) %>% 
-  mutate(num_stimulus = as.factor(num_stimulus)) %>% 
-  mutate(classe = as.factor(classe)) %>% 
-  data.frame()
-res.text <- textual(classe_stimuli, num.text = 1, contingence.by = 2)
-contingence_classe <- res.text$cont.table %>%
-  t() %>% 
-  data.frame() %>% 
-  rownames_to_column("num_stimulus") %>% 
-  mutate(num_stimulus = as.factor(num_stimulus))
 
 data_tps <- tab3%>%
   group_by(num_stimulus, id)%>%
@@ -94,6 +94,26 @@ data_fix <- tab3%>%
   summarise(feculents_fix= mean(feculents_fix),proteines_fix= mean(proteines_fix),legumes_fix= mean(legumes_fix),fruits_fix= mean(fruits_fix)) %>%
   mutate(num_stimulus = as.factor(num_stimulus))%>% 
   data.frame()
+
+classe_id <- tab3 %>%
+  dplyr::select(num_stimulus, id, classe) %>%
+  pivot_wider(names_from = id, values_from = classe) %>%
+  mutate(num_stimulus = as.factor(num_stimulus)) %>% 
+  data.frame()
+
+classe_stimuli <- tab3 %>% 
+  dplyr::select(num_stimulus, classe) %>% 
+  mutate(num_stimulus = as.factor(num_stimulus)) %>% 
+  mutate(classe = as.factor(classe)) %>% 
+  data.frame()
+res.text <- textual(classe_stimuli, num.text = 1, contingence.by = 2)
+contingence_classe <- res.text$cont.table %>%
+  t() %>% 
+  data.frame() %>% 
+  rownames_to_column("num_stimulus") %>% 
+  mutate(num_stimulus = as.factor(num_stimulus))
+
+
 
 data_AFM2 <- contingence_classe %>%
   full_join(classe_id, by = "num_stimulus") %>%
